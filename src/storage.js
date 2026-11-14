@@ -1,6 +1,6 @@
 export const statuses = ['Backlog', 'Planlagt', 'Pågår', 'Ferdig'];
 export const priorities = ['Lav', 'Middels', 'Høy'];
-export const threadColors = { rod: 'Rød', gronn: 'Bekreftet', bla: 'Mulig sammenheng', gul: 'Må sjekkes' };
+export const threadColors = { rod: 'Rød', gronn: 'Grønn', bla: 'Blå', gul: 'Gul' };
 export const colors = { gul: 'Gul', rosa: 'Rosa', gronn: 'Grønn', bla: 'Blå' };
 export const emptyState = () => ({ version: 2, cards: [], pins: [], threads: [], tasks: [], groups: [] });
 export const uid = () => crypto.randomUUID?.() ?? Array.from(crypto.getRandomValues(new Uint8Array(16)), n => n.toString(16).padStart(2, '0')).join('');

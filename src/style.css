@@ -138,7 +138,6 @@ form textarea{resize:vertical}
 .board-group,#groupDraft{position:absolute;border:2px dashed #654b30b3;background:#fff3c826;border-radius:7px;pointer-events:none}
 .board-group button{position:absolute;bottom:100%;left:0;white-space:nowrap;pointer-events:auto;cursor:grab}
 #groupDraft{z-index:5;background:#e7d6a644}
-.thread-note{overflow-wrap:anywhere;white-space:pre-wrap}
 @media(max-width:600px){.top{flex-wrap:wrap}.needle-tools button{padding:5px 7px;font-size:.73rem}}
 .card.dimmed,#pins .pin.dimmed,.thread-group[data-focus=dimmed]{opacity:.22}
 .thread-group[data-focus=related] .thread-line{stroke-width:4}
@@ -182,3 +181,13 @@ form textarea{resize:vertical}
 .picker-check{color:#7b2728}
 #newBoard{color:#7b2728;border-top:1px solid #e5d7bd;border-radius:0;margin-top:5px}
 @media(max-width:600px){#activeBoardName{max-width:95px}}
+
+.thread-colors{position:relative}
+.thread-swatch{display:block;width:24px;height:24px;padding:0;border:2px solid #fcf8ee;border-radius:50%;background:var(--thread-color);box-shadow:0 0 0 1px #6d5b4380;cursor:pointer;list-style:none}
+.thread-swatch::-webkit-details-marker{display:none}
+.thread-swatch:is(:hover,[aria-pressed=true]){background:var(--thread-color);box-shadow:0 0 0 2px #75634a}
+.thread-palette{position:absolute;top:calc(100% + 15px);left:50%;translate:-50% 0;display:flex;gap:9px;padding:8px;background:#fcf8ee;border:1px solid #ddcbb0;border-radius:20px;box-shadow:0 4px 12px #20160e45}
+[data-thread-color=rod]{--thread-color:#a41624}
+[data-thread-color=gronn]{--thread-color:#326a46}
+[data-thread-color=bla]{--thread-color:#275676}
+[data-thread-color=gul]{--thread-color:#805700}

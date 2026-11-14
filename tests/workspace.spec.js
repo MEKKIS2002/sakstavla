@@ -373,9 +373,9 @@ test('flytting av nål løfter stiften og lar tråden svinge før den faller til
   await expect(page.getByRole('button', { name: 'Slett valgt nål' })).toHaveCount(0);
   await page.locator('.thread-group').focus();
   await page.keyboard.press('Enter');
-  await expect(page.getByRole('button', { name: 'Slett valgt tråd' })).toBeVisible();
+  await expect(page.getByLabel('Trådfarge', { exact: true })).toBeVisible();
   await board.click({ position: { x: 600, y: 310 } });
-  await expect(page.getByRole('button', { name: 'Slett valgt tråd' })).toHaveCount(0);
+  await expect(page.getByLabel('Trådfarge', { exact: true })).toHaveCount(0);
   const origin = await center(pin);
   await page.mouse.move(origin.x, origin.y);
   await page.mouse.down();
@@ -393,7 +393,7 @@ test('flytting av nål løfter stiften og lar tråden svinge før den faller til
   await expect(thread).toHaveAttribute('d', restPath(during));
 });
 
-test('grupper, tavlesøk, angre, trådnotater og separate tavler', async ({ page }) => {
+test('grupper, tavlesøk, angre, trådfarger og separate tavler', async ({ page }) => {
   await page.goto('/sakstavla/');
   await saved(page);
   await page.getByRole('button', { name: /Legg til første element/ }).click();
@@ -424,10 +424,9 @@ test('grupper, tavlesøk, angre, trådnotater og separate tavler', async ({ page
   await page.keyboard.press('Escape');
   await page.locator('.thread-group').focus();
   await page.keyboard.press('Enter');
-  await page.getByRole('button', { name: 'Legg til trådnotat' }).click();
-  await page.getByRole('textbox', { name: 'Trådnotat', exact: true }).fill('Samme sted');
-  await page.getByRole('button', { name: 'Lagre', exact: true }).click();
-  await expect(page.getByText('Samme sted', { exact: true })).toBeVisible();
+  await page.getByLabel('Trådfarge', { exact: true }).click();
+  await page.getByRole('button', { name: 'Blå', exact: true }).click();
+  await expect(page.locator('.thread-group')).toHaveAttribute('data-color', 'bla');
 
   await page.getByLabel('Velg tavle', { exact: true }).click();
   await page.getByRole('button', { name: /Ny tavle/ }).click();
@@ -448,7 +447,7 @@ test('grupper, tavlesøk, angre, trådnotater og separate tavler', async ({ page
   await page.getByRole('button', { name: 'Eksporter sikkerhetskopi' }).click();
   const backup = JSON.parse(await readFile(await (await download).path(), 'utf8'));
   expect(backup.boards).toHaveLength(2);
-  expect(backup.boards[0].state.threads[0].note).toBe('Samme sted');
+  expect(backup.boards[0].state.threads[0].color).toBe('bla');
   expect(backup.boards[0].state.groups[0].name).toBe('Brygga');
   expect(backup.boards[1].state.tasks[0].title).toBe('Kun i ny sak');
   await page.reload();
@@ -487,9 +486,8 @@ test('kommandopalett, innboks, kildespor, trådfokus og sammenbrettede grupper',
   const thread = page.locator('.thread-group').first();
   await thread.focus();
   await page.keyboard.press('Enter');
-  await page.getByRole('button', { name: 'Legg til trådnotat' }).click();
-  await page.getByRole('combobox', { name: 'Trådfarge' }).selectOption('gronn');
-  await page.getByRole('button', { name: 'Lagre', exact: true }).click();
+  await page.getByLabel('Trådfarge', { exact: true }).click();
+  await page.getByRole('button', { name: 'Grønn', exact: true }).click();
   await expect(thread).toHaveAttribute('data-color', 'gronn');
   await page.locator('#pins .pin').first().dblclick();
   await expect(thread).toHaveAttribute('data-focus', 'related');

@@ -34,7 +34,7 @@ Videokort støtter lokale filer, direkte videolenker og YouTube. Hvis YouTube-vi
 - Opprett en tavle med «Ny tavle» i tavlevelgeren. Bruk velgeren for å bytte mellom tavler med egne kort, tråder og backlogger.
 - Bruk «Grupper» og dra et område rundt hele kortene du vil samle. Dra gruppen etter navnet for å flytte den. Klikk på navnet for å endre eller fjerne gruppen.
 - «Søk på tavla» finner lapper, kilder og oppgaver. Velg et treff for å sentrere kortet eller åpne en oppgave i backlogen.
-- Velg en tråd for å legge til, lese eller redigere et valgfritt notat.
+- Velg en tråd og klikk på fargeknappen for å bytte farge. Trykk Delete for å slette tråden.
 - Bruk Ctrl+Z for å angre og Ctrl+Shift+Z eller Ctrl+Y for å gjøre om. På Mac kan du bruke Command. Historikken er separat per tavle og varer til siden lastes på nytt.
 - Sikkerhetskopien inneholder alle tavlene. Import erstatter arbeidsområdet etter bekreftelse. Tidligere sikkerhetskopier kan fortsatt importeres.
 
@@ -43,7 +43,7 @@ Videokort støtter lokale filer, direkte videolenker og YouTube. Hvis YouTube-vi
 - Ctrl+K eller Command+K åpner kommandopaletten. Søk etter handlinger, tavler eller oppgaver. Bruk pilene og Enter for å velge.
 - Innboksen samler lapper, lenker, bilder og videoer per tavle. Aktiver innsamling i innboksen for å sende bilder og videoer fra tavla dit midlertidig. Bruk «Legg på tavla» når sporet er klart.
 - Høyreklikk på et kort og velg «Gjør til oppgave». Oppgavedetaljene får en snarvei tilbake til kildesporet.
-- Dobbeltklikk på en nål for å fremheve forbindelsene, og trykk Escape for å gå tilbake. Trådfargen velges i dialogen for trådnotatet.
+- Dobbeltklikk på en nål for å fremheve forbindelsene, og trykk Escape for å gå tilbake. 
 - Klikk på gruppenavnet og velg «Brett sammen» for å skjule kortene og trådene som er festet til dem. Bruk «Åpne gruppen» for å vise dem igjen.
 
 ## Lokal lagring

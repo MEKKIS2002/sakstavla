@@ -583,9 +583,7 @@ function updateModes() {
   }, 'danger'));
   else if (selectedThread) {
     const thread = state.threads.find(thread => thread.id === selectedThread);
-    if (thread.note) hint.append(element('span', 'thread-note', thread.note));
-    hint.append(button(thread.note ? 'Rediger trådnotat' : 'Legg til trådnotat', () => editThreadNote(thread)),
-      button('Slett valgt tråd', removeThread, 'danger'));
+    hint.append(threadColorPicker(thread));
   }
 }
 
@@ -649,19 +647,31 @@ function choosePin(pin) {
   inserted.forEach(animateInsertion);
 }
 
-function editThreadNote(thread) {
-  const form = element('form');
-  const note = field(form, 'Trådnotat', 'text', thread.note ?? '');
-  const color = field(form, 'Trådfarge', 'select', thread.color || 'rod', Object.entries(threadColors));
-  actions(form, 'Lagre', () => {
-    thread.note = note.value.trim();
-    thread.color = color.value;
-    renderThreads();
-    dialog.close();
-    updateModes();
-    save();
-  });
-  openDialog('Trådnotat', form);
+function threadColorPicker(thread) {
+  const picker = element('details', 'thread-colors');
+  const trigger = element('summary', 'thread-swatch');
+  trigger.dataset.threadColor = thread.color ?? 'rod';
+  trigger.setAttribute('aria-label', 'Trådfarge');
+  trigger.title = 'Trådfarge';
+  const palette = element('div', 'thread-palette');
+  palette.setAttribute('role', 'group');
+  palette.setAttribute('aria-label', 'Velg farge');
+  for (const [color, name] of Object.entries(threadColors)) {
+    const swatch = button('', () => {
+      thread.color = color;
+      renderThreads();
+      updateModes();
+      $('boardHint').querySelector('summary').focus({ preventScroll: true });
+      save();
+    }, 'thread-swatch');
+    swatch.dataset.threadColor = color;
+    swatch.setAttribute('aria-label', name);
+    swatch.setAttribute('aria-pressed', color === (thread.color ?? 'rod'));
+    swatch.title = name;
+    palette.append(swatch);
+  }
+  picker.append(trigger, palette);
+  return picker;
 }
 
 function removeThread() {
