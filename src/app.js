@@ -6,7 +6,7 @@ const viewport = $('viewport');
 const world = $('world');
 const cards = $('cards');
 const pins = $('pins');
-const imageRatios = new WeakMap();
+const mediaRatios = new WeakMap();
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const threadSprings = new Map();
 let springFrame = 0;
@@ -184,7 +184,7 @@ function mediaUrl(card) {
 }
 
 function cardSize(card) {
-  const ratio = imageRatios.get(card);
+  const ratio = mediaRatios.get(card);
   if (!ratio) return { w: card.w, h: card.h };
   const width = Math.min(card.w, card.h * ratio);
   return { w: width, h: width / ratio, ratio };
@@ -252,6 +252,7 @@ function renderVideo(body, card) {
     frame.loading = 'lazy';
     frame.allowFullscreen = true;
     frame.allow = 'encrypted-media; picture-in-picture; fullscreen';
+    mediaRatios.set(card, 16 / 9);
     body.append(frame);
   } else {
     const video = element('video');
@@ -262,16 +263,19 @@ function renderVideo(body, card) {
     const error = element('p', 'video-error', 'Videoen kunne ikke spilles av her. Sjekk adressen eller bruk en MP4- eller WebM-fil.');
     error.hidden = true;
     video.addEventListener('error', () => { error.hidden = false; });
+    video.addEventListener('loadedmetadata', () => {
+      if (!video.videoWidth || !video.videoHeight) return;
+      mediaRatios.set(card, video.videoWidth / video.videoHeight);
+      const node = video.closest('.card');
+      if (node?.isConnected) {
+        placeCard(node, card);
+        renderThreads();
+      }
+    });
     video.src = card.video ? mediaUrl(card) : card.url;
     body.append(video, error);
   }
-  if (card.url) {
-    const link = element('a', 'video-source', youtube ? 'Åpne på YouTube' : 'Åpne videolenken');
-    link.href = card.url;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    body.append(link);
-  }
+
 }
 
 function renderCards() {
@@ -357,7 +361,7 @@ function renderCards() {
       const image = surface.querySelector('img');
       const fitImage = () => {
         if (!image.naturalWidth) return;
-        imageRatios.set(card, image.naturalWidth / image.naturalHeight);
+        mediaRatios.set(card, image.naturalWidth / image.naturalHeight);
         placeCard(node, card);
         renderThreads();
       };
@@ -367,7 +371,19 @@ function renderCards() {
       placeCard(node, card);
       if (image.complete) fitImage();
     } else {
-      node.append(head, body, resize);
+      if (card.type === 'video') {
+        const grip = element('div', 'video-grip');
+        grip.title = 'Dra for å flytte videoen · høyreklikk for handlinger';
+        const move = event => {
+          if (event.button === 0 && !needleMode && !groupMode) begin(event, 'move', card, node);
+        };
+        grip.addEventListener('pointerdown', move);
+        body.addEventListener('pointerdown', event => { if (event.target === body) move(event); });
+        node.append(body, grip, resize);
+        placeCard(node, card);
+      } else {
+        node.append(head, body, resize);
+      }
     }
     return node;
   }));
@@ -1704,6 +1720,17 @@ function openCardMenu(event, card) {
     render();
     save();
   }));
+  if (card.type === 'video') {
+    if (card.url) {
+      const link = element('a', 'menu-link', youtubeId(card.url) ? 'Åpne på YouTube' : 'Åpne videolenken');
+      link.href = card.url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.addEventListener('click', () => closeBoardMenu(true));
+      menu.append(link);
+    }
+    menu.append(action('Fjern video', () => removeCard(card)));
+  }
   menu.hidden = false;
   $('menuToggle').setAttribute('aria-expanded', 'true');
   menu.style.left = Math.max(8, Math.min(event.clientX - rect.left, rect.width - menu.offsetWidth - 8)) + 'px';

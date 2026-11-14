@@ -509,6 +509,14 @@ test('YouTube-lenke bruker innebygd spiller med lenke til originalen', async ({ 
   await page.getByRole('button', { name: 'Legg til video' }).click();
   const frame = page.locator('iframe[title="YouTube-video"]');
   await expect(frame).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/M7lc1UVf-VE');
+  const card = page.locator('.card[data-type=video]');
+  await expect(card.locator('.card-head')).toHaveCount(0);
+  await expect(card.getByRole('link')).toHaveCount(0);
+  const grip = await center(card.locator('.video-grip'));
+  const before = await card.boundingBox();
+  await drag(page, grip, { x: grip.x + 60, y: grip.y + 25 });
+  await expect.poll(async () => (await card.boundingBox()).x).toBeCloseTo(before.x + 60, 0);
+  await card.locator('.video-grip').click({ button: 'right' });
   await expect(page.getByRole('link', { name: 'Åpne på YouTube' })).toBeVisible();
   await saved(page);
   await page.reload();

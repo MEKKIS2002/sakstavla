@@ -139,7 +139,7 @@ async function validateBoard(value) {
   const cardIds = new Set();
   for (const card of value.cards) {
     requireValid(card && id(card.id) && !cardIds.has(card.id) && [card.x, card.y, card.w, card.h].every(finite) &&
-      (card.type === 'image' ? card.w >= 40 && card.h >= 40 : card.w >= 150 && card.h >= 116));
+      (['image', 'video'].includes(card.type) ? card.w >= 40 && card.h >= 40 : card.w >= 150 && card.h >= 116));
     cardIds.add(card.id);
     const { id: cardId, x, y, w, h, type } = card;
     const clean = { id: cardId, x, y, w, h, type };

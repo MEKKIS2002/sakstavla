@@ -104,8 +104,9 @@ form textarea{resize:vertical}
 .card[data-type=image] .image-surface{display:flex;align-items:flex-start;background:transparent;cursor:grab;border-radius:0}
 .card[data-type=image] .image-surface img{pointer-events:none;user-select:none;object-position:top center;filter:drop-shadow(1px 3px 4px #39220d55)}
 .card[data-type=image] .resize{background-color:#fcfaf5cc;z-index:1}
-.card[data-type=video] .card-body{flex:1}
-.card video{width:100%;min-height:0;flex:1;background:#242523;border-radius:4px}
+.card[data-type=video]{min-height:0;background:transparent;box-shadow:none;border-radius:0}
+.card[data-type=video] .card-body{position:relative;flex:1;padding:0;gap:0;overflow:hidden}
+.card video{width:100%;min-height:0;flex:1;background:#242523}
 .video-error{color:#84262a}
 .needle-tools{position:absolute;z-index:7;top:14px;right:16px;display:grid;justify-items:end;gap:5px;cursor:auto}
 #needleTools[aria-pressed=true]{background:#f7dcd7;color:#782225}
@@ -160,5 +161,11 @@ form textarea{resize:vertical}
 .inbox-capture{display:flex;align-items:center;gap:7px}
 #inboxButton.capture-on{border-color:#a52e32}
 .search-highlight{outline:4px solid #a52e32}
-.youtube-player{border:0;border-radius:4px;width:100%;min-height:0;flex:1;background:#242523}
-.video-source{font-size:.77rem}
+.youtube-player{border:0;width:100%;min-height:0;flex:1;background:#242523}
+.video-grip{position:absolute;inset:0 0 auto;height:10px;cursor:grab}
+.card[data-type=video] .resize{width:10px;height:10px;background-color:#fcfaf5cc;opacity:0}
+.card[data-type=video]:hover .resize,.card[data-type=video]:focus-within .resize{opacity:1}
+@media(hover:none){.card[data-type=video] .resize{opacity:1;width:18px;height:18px}}
+.card[data-type=video] .video-error{position:absolute;top:12px;left:8px;right:8px;padding:5px;background:#fff5e5}
+#viewport[data-needle-mode]:not([data-needle-mode=""]) .youtube-player,#viewport:has(#groupTool[aria-pressed=true]) .youtube-player{pointer-events:none}
+.board-menu .menu-link{padding:.57rem .8rem;font-size:.88rem;font-weight:600}
