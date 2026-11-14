@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#242523">
+<title>Sakstavla – din digitale korktavle</title>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#tavle"><span class="brand-icon" aria-hidden="true">⌖</span><span>Sakstavla<small>Ditt arbeidsrom</small></span></a>
+  <nav aria-label="Arbeidsvisning"><a href="#tavle" id="boardTab">Korktavle</a><a href="#backlog" id="backlogTab">Backlog</a></nav>
+  <div class="project-tools"><select id="boards" aria-label="Velg tavle"></select><button id="newBoard" aria-label="Ny tavle" title="Ny tavle">＋</button></div>
+  <button id="backupButton" class="backup" type="button">Sikkerhetskopi</button>
+</header>
+<main>
+  <section id="boardView" aria-label="Korktavle">
+    <div id="viewport" tabindex="0" aria-label="Arbeidsflate">
+      <div id="world"><svg id="threads" aria-label="Røde tråder"></svg><div id="groups"></div><div id="cards"></div><div id="pins"></div></div>
+      <div id="empty" class="empty">
+
+        <span class="empty-label">SAKSTAVLA</span>
+        <h2>Begynn med et spor</h2>
+        <p>Høyreklikk på tavla for å legge til noe, eller dra inn bilder og videoer.</p>
+        <button class="primary" id="first">＋ Legg til første element</button>
+      </div>
+      <div class="needle-tools">
+        <button id="inboxButton">Innboks</button>
+        <button id="boardSearch">Søk på tavla</button>
+        <button id="groupTool" aria-pressed="false">Grupper</button>
+        <button id="needleTools" aria-pressed="false" title="Klikk for nål · dra for tråd">Nåler og tråder</button>
+      </div>
+      <div id="groupDraft" hidden></div>
+      <div id="boardMenu" class="board-menu" role="group" aria-label="Tavlemeny" hidden></div>
+      <div id="boardHint" class="hint" hidden></div>
+      <div class="zoom" aria-label="Zoom og visning">
+        <button id="menuToggle" aria-label="Åpne tavlemeny" aria-expanded="false" title="Tavlemeny">⋯</button><button id="out" aria-label="Zoom ut">−</button><button id="reset" aria-label="Tilbakestill visning og zoom">100 %</button><button id="in" aria-label="Zoom inn">＋</button><button id="fit" aria-label="Tilpass alt innhold" title="Tilpass alt innhold">⛶</button>
+      </div>
+    </div>
+  </section>
+  <section id="backlogView" hidden aria-label="Backlog">
+    <div class="bar"><div class="board-title"><h1>Backlog</h1><span id="taskCount"></span></div><button class="primary" id="newTask">＋ Ny oppgave</button></div>
+    <div class="filters"><input type="search" id="search" placeholder="Søk i oppgaver" aria-label="Søk i oppgaver"><select id="priorityFilter" aria-label="Filtrer på prioritet"></select><select id="labelFilter" aria-label="Filtrer på merkelapp"></select><button id="clearFilters">Nullstill filtre</button></div>
+    <div id="kanban"></div>
+  </section>
+</main>
+<div id="saveStatus" class="visually-hidden" role="status">Åpner lokal lagring …</div>
+<div id="toast" role="status" hidden></div>
+<input type="file" id="images" accept="image/*" multiple hidden>
+<input type="file" id="videos" accept="video/*,.mp4,.webm,.mov,.m4v,.ogv" multiple hidden>
+<input type="file" id="restore" accept=".json,application/json" hidden>
+<dialog id="dialog" aria-labelledby="dialogTitle"><div id="dialogBody"></div></dialog>
+<script type="module" src="./src/app.js"></script>
+</body>
+</html>
