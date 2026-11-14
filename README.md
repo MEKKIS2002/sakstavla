@@ -22,16 +22,16 @@ Bygget ligger i dist/. Relative ressursadresser og navigasjon med URL-fragmenter
 
 ## Bruk
 
-- Lim inn skjermbilder på tavla, slipp bilde- eller videofiler på arbeidsflaten, eller åpne tavlemenyen med høyreklikk eller «⋯» ved zoomkontrollene. Dra i bildet eller øverst på andre kort for å flytte dem. Bruk håndtaket nederst til høyre for å endre størrelse. Skriv direkte på lapper.
+- Lim inn skjermbilder på tavla, slipp bilde- eller videofiler på arbeidsflaten, eller åpne tavlemenyen med høyreklikk. Dra i bildet eller øverst på andre kort for å flytte dem. Bruk håndtaket nederst til høyre for å endre størrelse. Skriv direkte på lapper.
 - Aktiver «Nåler og tråder» øverst til høyre. Klikk på tavla eller et kort for å feste en nål. Dra mellom to punkter for å trekke en tråd, eller velg en eksisterende nål og deretter sluttpunktet. Nåler på kort følger kortet når du flytter det eller endrer størrelsen. Escape avslutter verktøyet. Velg en nål eller tråd for å slette den.
-- Dra i ledig tavleplass for å panorere. Du kan også dra med midtre museknapp over et kort. Bruk «Tilpass alt innhold» nederst til høyre for å finne igjen alle kortene.
+- Dra i ledig tavleplass for å panorere. Du kan også dra med midtre museknapp over et kort. Bruk «Tilpass alt innhold» i høyreklikkmenyen for å finne igjen alle kortene.
 - Dra oppgaver til en kolonne eller mellom kortene i en kolonne. På berøringsskjerm kan du endre status i oppgavedetaljene. Bruk «Lagre og fest på tavla» for å lage en kobling til oppgaven fra korktavla.
 
 Videokort støtter lokale filer, direkte videolenker og YouTube. Hvis YouTube-videoen har sperret innebygging, høyreklikk øverst på videoen og velg «Åpne på YouTube». Dra langs overkanten for å flytte videoen, og bruk hjørnet nederst til høyre for å skalere. Videofiler følger med i sikkerhetskopien. For en direkte videolenke lagres nettadressen.
 
 ## Tavler, grupper og historikk
 
-- Opprett en tavle med «＋» ved tavlevelgeren. Bruk velgeren for å bytte mellom tavler med egne kort, tråder og backlogger.
+- Opprett en tavle med «Ny tavle» i tavlevelgeren. Bruk velgeren for å bytte mellom tavler med egne kort, tråder og backlogger.
 - Bruk «Grupper» og dra et område rundt hele kortene du vil samle. Dra gruppen etter navnet for å flytte den. Klikk på navnet for å endre eller fjerne gruppen.
 - «Søk på tavla» finner lapper, kilder og oppgaver. Velg et treff for å sentrere kortet eller åpne en oppgave i backlogen.
 - Velg en tråd for å legge til, lese eller redigere et valgfritt notat.

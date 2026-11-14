@@ -10,7 +10,14 @@
 <header class="top">
   <a class="brand" href="#tavle"><span class="brand-icon" aria-hidden="true">⌖</span><span>Sakstavla<small>Ditt arbeidsrom</small></span></a>
   <nav aria-label="Arbeidsvisning"><a href="#tavle" id="boardTab">Korktavle</a><a href="#backlog" id="backlogTab">Backlog</a></nav>
-  <div class="project-tools"><select id="boards" aria-label="Velg tavle"></select><button id="newBoard" aria-label="Ny tavle" title="Ny tavle">＋</button></div>
+  <details class="project-tools" id="boardPicker">
+    <summary aria-label="Velg tavle"><span class="picker-icon" aria-hidden="true">▤</span><span id="activeBoardName"></span><span class="picker-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="picker-panel">
+      <h2>Mine tavler</h2>
+      <div id="boardChoices"></div>
+      <button id="newBoard" type="button">＋ Ny tavle</button>
+    </div>
+  </details>
   <button id="backupButton" class="backup" type="button">Sikkerhetskopi</button>
 </header>
 <main>
@@ -33,9 +40,6 @@
       <div id="groupDraft" hidden></div>
       <div id="boardMenu" class="board-menu" role="group" aria-label="Tavlemeny" hidden></div>
       <div id="boardHint" class="hint" hidden></div>
-      <div class="zoom" aria-label="Zoom og visning">
-        <button id="menuToggle" aria-label="Åpne tavlemeny" aria-expanded="false" title="Tavlemeny">⋯</button><button id="out" aria-label="Zoom ut">−</button><button id="reset" aria-label="Tilbakestill visning og zoom">100 %</button><button id="in" aria-label="Zoom inn">＋</button><button id="fit" aria-label="Tilpass alt innhold" title="Tilpass alt innhold">⛶</button>
-      </div>
     </div>
   </section>
   <section id="backlogView" hidden aria-label="Backlog">

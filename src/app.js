@@ -121,7 +121,6 @@ function updateCamera() {
   world.style.transform = 'translate(' + camera.x + 'px,' + camera.y + 'px) scale(' + camera.scale + ')';
   viewport.style.backgroundSize = (864 * camera.scale) + 'px';
   viewport.style.backgroundPosition = camera.x + 'px ' + camera.y + 'px';
-  $('reset').textContent = Math.round(camera.scale * 100) + ' %';
 }
 
 function zoom(ratio, x = viewport.clientWidth / 2, y = viewport.clientHeight / 2) {
@@ -686,7 +685,7 @@ function begin(event, kind, card, node) {
 }
 
 viewport.addEventListener('pointerdown', event => {
-  if (event.target.closest('.zoom,.hint,.empty,.board-menu,.needle-tools,.pin')) return;
+  if (event.target.closest('.hint,.empty,.board-menu,.needle-tools,.pin')) return;
   const background = !event.target.closest('.card,.thread-group,.board-group');
   if (event.button === 1 || (event.button === 0 && background && !needleMode && !groupMode)) {
     begin(event, 'pan');
@@ -742,7 +741,7 @@ function needlePoint(event, target) {
   return state.pins.find(pin => pin.id === id) ?? newPin(event.clientX, event.clientY, target);
 }
 
-const toolsSelector = '.needle-tools, .zoom, .hint, .board-menu';
+const toolsSelector = '.needle-tools,  .hint, .board-menu';
 
 pins.addEventListener('pointerdown', event => {
   const node = event.target.closest('.pin');
@@ -988,7 +987,6 @@ function videoForm(at) {
 
 function closeBoardMenu(restoreFocus = false) {
   $('boardMenu').hidden = true;
-  $('menuToggle').setAttribute('aria-expanded', 'false');
   if (restoreFocus) menuOrigin?.focus({ preventScroll: true });
 }
 
@@ -1017,12 +1015,11 @@ function addMenu(clientX, clientY, origin, at) {
     item('Direkte videolenke', () => videoForm(at)),
     item('Oppgave fra backlog', () => { location.hash = 'backlog'; }));
   menu.hidden = false;
-  $('menuToggle').setAttribute('aria-expanded', 'true');
   const rect = viewport.getBoundingClientRect();
   menu.style.left = Math.max(8, Math.min(clientX - rect.left, rect.width - menu.offsetWidth - 8)) + 'px';
   menu.style.top = Math.max(8, Math.min(clientY - rect.top, rect.height - menu.offsetHeight - 8)) + 'px';
   const inbox = item('Innboks', openInbox);
-  menu.append(inbox);
+  menu.append(inbox, item('Tilpass alt innhold', fit), item('Tilbakestill visning', reset));
   note.focus({ preventScroll: true });
 }
 
@@ -1295,13 +1292,8 @@ $('first').addEventListener('click', event => {
   const rect = event.currentTarget.getBoundingClientRect();
   addMenu(rect.left, rect.bottom + 6, event.currentTarget);
 });
-$('menuToggle').addEventListener('click', event => {
-  if (!$('boardMenu').hidden) return closeBoardMenu(true);
-  const rect = event.currentTarget.getBoundingClientRect();
-  addMenu(rect.left, rect.top - 220, event.currentTarget);
-});
 viewport.addEventListener('contextmenu', event => {
-  if (event.target.closest('.zoom, .board-menu, .hint, .thread-group, .pin, .needle-tools')) return;
+  if (event.target.closest(' .board-menu, .hint, .thread-group, .pin, .needle-tools')) return;
   const node = event.target.closest('.card');
   if (node) {
     const card = state.cards.find(card => card.id === node.dataset.id);
@@ -1324,13 +1316,10 @@ document.addEventListener('pointerdown', event => {
     renderThreads();
     updateModes();
   }
-  if (!$('boardMenu').hidden && !event.target.closest('#boardMenu, #menuToggle')) closeBoardMenu();
+  if (!$('boardMenu').hidden && !event.target.closest('#boardMenu')) closeBoardMenu();
+  if ($('boardPicker').open && !event.target.closest('#boardPicker')) closeBoardPicker();
 });
 $('newTask').addEventListener('click', () => editTask());
-$('out').addEventListener('click', () => zoom(1 / 1.25));
-$('in').addEventListener('click', () => zoom(1.25));
-$('reset').addEventListener('click', reset);
-$('fit').addEventListener('click', fit);
 
 window.addEventListener('hashchange', () => switchView(location.hash === '#backlog' ? 'backlog' : 'tavle'));
 window.addEventListener('keydown', event => {
@@ -1434,18 +1423,41 @@ function activateBoard(id, fitBoard = true) {
   setNeedleMode(false);
   setGroupMode(false);
   reset();
-  $('boards').replaceChildren(...workspace.boards.map(board => new Option(board.name, board.id)));
-  $('boards').value = id;
+  $('activeBoardName').textContent = board.name;
+  $('boardChoices').replaceChildren(...workspace.boards.map(choice => {
+    const option = button(choice.name, () => {
+      closeBoardPicker(true);
+      if (choice.id !== workspace.active) {
+        activateBoard(choice.id);
+        persist();
+      }
+    });
+    if (choice.id === id) {
+      option.setAttribute('aria-current', 'true');
+      const check = element('span', 'picker-check', '✓');
+      check.setAttribute('aria-hidden', 'true');
+      option.append(check);
+    }
+    return option;
+  }));
   for (const field of ['search', 'priorityFilter', 'labelFilter']) $(field).value = '';
   render();
   if (fitBoard && view === 'tavle') fit();
 }
 
-$('boards').addEventListener('change', () => {
-  activateBoard($('boards').value);
-  persist();
+function closeBoardPicker(restoreFocus = false) {
+  $('boardPicker').open = false;
+  if (restoreFocus) $('boardPicker').querySelector('summary').focus();
+}
+
+$('boardPicker').addEventListener('keydown', event => {
+  if (event.key === 'Escape' && $('boardPicker').open) {
+    event.stopPropagation();
+    closeBoardPicker(true);
+  }
 });
 $('newBoard').addEventListener('click', () => {
+  closeBoardPicker(true);
   const form = element('form');
   const name = field(form, 'Tavlenavn', 'text');
   name.required = true;
@@ -1732,7 +1744,6 @@ function openCardMenu(event, card) {
     menu.append(action('Fjern video', () => removeCard(card)));
   }
   menu.hidden = false;
-  $('menuToggle').setAttribute('aria-expanded', 'true');
   menu.style.left = Math.max(8, Math.min(event.clientX - rect.left, rect.width - menu.offsetWidth - 8)) + 'px';
   menu.style.top = Math.max(8, Math.min(event.clientY - rect.top, rect.height - menu.offsetHeight - 8)) + 'px';
   menu.firstElementChild.focus({ preventScroll: true });
@@ -1846,6 +1857,12 @@ function commandPalette() {
     ['Åpne innboksen', openInbox],
     ['Søk på tavla', () => { navigate('tavle'); $('boardSearch').click(); }],
     ['Åpne backlog', () => navigate('backlog')],
+    ['Legg til på tavla', () => {
+      navigate('tavle');
+      const rect = viewport.getBoundingClientRect();
+      addMenu(rect.left + 16, rect.top + 90, viewport);
+    }],
+    ['Tilbakestill visning', () => { navigate('tavle'); reset(); }],
     ['Tilpass alt innhold', () => { navigate('tavle'); fit(); }],
     ['Angre', () => restoreHistory(false)],
     ['Gjør om', () => restoreHistory(true)],

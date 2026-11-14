@@ -65,13 +65,17 @@ test('tavle, tråder, Kanban, IndexedDB og gjenoppretting under undermappe', asy
   await drag(page, pictureCenter, { x: pictureCenter.x, y: pictureCenter.y + 24 });
   await expect.poll(async () => (await center(picture)).y).toBeCloseTo(pictureCenter.y + 24, 0);
 
-  await page.getByRole('button', { name: 'Åpne tavlemeny' }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Legg til på tavla');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Kildelenke' }).click();
   await page.getByLabel('Nettadresse').fill('https://example.org/kilde');
   await page.getByLabel('Tittel (valgfritt)').fill('Arkiv');
   await page.getByRole('button', { name: 'Legg til kilde' }).click();
   await expect(page.getByRole('link', { name: 'Arkiv' })).toHaveAttribute('href', 'https://example.org/kilde');
-  await page.getByRole('button', { name: 'Åpne tavlemeny' }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Legg til på tavla');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Gul lapp' }).click();
   await expect(page.getByRole('textbox', { name: 'Tekst på lapp' })).toBeFocused();
   await page.keyboard.type('Sjekk datoen');
@@ -115,11 +119,14 @@ test('tavle, tråder, Kanban, IndexedDB og gjenoppretting under undermappe', asy
   expect(resized).not.toBe(moved);
   const transform = await page.locator('#world').getAttribute('style');
   await drag(page, { x: 100, y: 570 }, { x: 225, y: 630 });
-  await page.getByRole('button', { name: 'Zoom inn' }).click();
-  expect(await page.locator('#world').getAttribute('style')).not.toBe(transform);
+  await page.mouse.move(700, 400);
+  await page.mouse.wheel(0, -120);
+  await expect(page.locator('#world')).not.toHaveAttribute('style', transform);
   await expect(lines.first()).toHaveAttribute('d', restPath(resized));
   await page.keyboard.press('Escape');
-  await page.getByRole('button', { name: 'Tilpass alt innhold' }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Tilpass alt innhold');
+  await page.keyboard.press('Enter');
 
   await page.getByRole('link', { name: 'Backlog' }).click();
   await addTask(page, 'Sjekk opptaket');
@@ -129,7 +136,9 @@ test('tavle, tråder, Kanban, IndexedDB og gjenoppretting under undermappe', asy
   await tile.getByRole('button').click();
   await expect(page.getByLabel('Planlagt dato')).toHaveValue('2026-12-01');
   await page.getByRole('button', { name: 'Lagre og fest på tavla' }).click();
-  await page.getByRole('button', { name: 'Tilpass alt innhold' }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Tilpass alt innhold');
+  await page.keyboard.press('Enter');
   await needleTool(page);
   await pin(page, 'Bilde').click();
   await placeNeedle(page, 'task');
@@ -225,11 +234,15 @@ test('trykk og redigering på en smal berøringsskjerm', async ({ browser, baseU
   await page.getByRole('button', { name: /Legg til første element/ }).tap();
   await page.getByRole('button', { name: 'Gul lapp' }).tap();
   await page.getByRole('textbox', { name: 'Tekst på lapp' }).fill('Mobilnotat');
-  await page.getByRole('button', { name: 'Åpne tavlemeny' }).tap();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Legg til på tavla');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Kildelenke' }).tap();
   await page.getByLabel('Nettadresse').fill('https://example.org/');
   await page.getByRole('button', { name: 'Legg til kilde' }).tap();
-  await page.getByRole('button', { name: 'Tilpass alt innhold' }).tap();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Tilpass alt innhold');
+  await page.keyboard.press('Enter');
   await needleTool(page);
   await page.locator('[data-type=note]').tap({ timeout: 4000 });
   await pin(page, 'Mobilnotat').tap();
@@ -416,14 +429,15 @@ test('grupper, tavlesøk, angre, trådnotater og separate tavler', async ({ page
   await page.getByRole('button', { name: 'Lagre', exact: true }).click();
   await expect(page.getByText('Samme sted', { exact: true })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Ny tavle', exact: true }).click();
+  await page.getByLabel('Velg tavle', { exact: true }).click();
+  await page.getByRole('button', { name: /Ny tavle/ }).click();
   await page.getByLabel('Tavlenavn').fill('Ny sak');
   await page.getByRole('button', { name: 'Opprett tavle' }).click();
   await expect(card).toHaveCount(0);
   await page.getByRole('link', { name: 'Backlog' }).click();
   await addTask(page, 'Kun i ny sak');
-  const boards = page.getByLabel('Velg tavle');
-  await boards.selectOption({ label: 'Min tavle' });
+  await page.getByLabel('Velg tavle', { exact: true }).click();
+  await page.getByRole('button', { name: 'Min tavle', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Kun i ny sak' })).toHaveCount(0);
   await page.getByRole('link', { name: 'Korktavle' }).click();
   await expect(card).toHaveCount(1);
@@ -438,7 +452,8 @@ test('grupper, tavlesøk, angre, trådnotater og separate tavler', async ({ page
   expect(backup.boards[0].state.groups[0].name).toBe('Brygga');
   expect(backup.boards[1].state.tasks[0].title).toBe('Kun i ny sak');
   await page.reload();
-  await boards.selectOption({ label: 'Ny sak' });
+  await page.getByLabel('Velg tavle', { exact: true }).click();
+  await page.getByRole('button', { name: 'Ny sak', exact: true }).click();
   await page.getByRole('link', { name: 'Backlog' }).click();
   await expect(page.getByRole('button', { name: 'Kun i ny sak' })).toBeVisible();
 });
@@ -503,7 +518,9 @@ test('YouTube-lenke bruker innebygd spiller med lenke til originalen', async ({ 
   await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({ body: 'YouTube' }));
   await page.goto('/sakstavla/');
   await saved(page);
-  await page.getByRole('button', { name: 'Åpne tavlemeny' }).click();
+  await page.keyboard.press('Control+k');
+  await page.getByRole('searchbox', { name: 'Søk etter kommando' }).fill('Legg til på tavla');
+  await page.keyboard.press('Enter');
   await page.getByRole('button', { name: 'Direkte videolenke' }).click();
   await page.getByLabel('Videolenke', { exact: true }).fill('https://www.youtube.com/watch?v=M7lc1UVf-VE');
   await page.getByRole('button', { name: 'Legg til video' }).click();
