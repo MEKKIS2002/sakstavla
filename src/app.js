@@ -229,6 +229,51 @@ function cardNode(id) {
   return [...cards.children].find(node => node.dataset.id === id);
 }
 
+function youtubeId(value) {
+  const url = new URL(value);
+  const host = url.hostname.toLowerCase();
+  const [, route, segment] = url.pathname.split('/');
+  let id;
+  if (host === 'youtu.be') id = route;
+  if (['youtube.com', 'www.youtube.com', 'm.youtube.com', 'www.youtube-nocookie.com'].includes(host)) {
+    if (route === 'watch') id = url.searchParams.get('v');
+    if (['shorts', 'embed', 'live'].includes(route)) id = segment;
+  }
+  return /^[A-Za-z0-9_-]{11}$/.test(id ?? '') ? id : null;
+}
+
+function renderVideo(body, card) {
+  const youtube = card.url && youtubeId(card.url);
+  if (youtube) {
+    const frame = element('iframe', 'youtube-player');
+    frame.title = 'YouTube-video';
+    frame.src = 'https://www.youtube-nocookie.com/embed/' + youtube;
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    frame.loading = 'lazy';
+    frame.allowFullscreen = true;
+    frame.allow = 'encrypted-media; picture-in-picture; fullscreen';
+    body.append(frame);
+  } else {
+    const video = element('video');
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = 'none';
+    video.setAttribute('aria-label', 'Spill av video');
+    const error = element('p', 'video-error', 'Videoen kunne ikke spilles av her. Sjekk adressen eller bruk en MP4- eller WebM-fil.');
+    error.hidden = true;
+    video.addEventListener('error', () => { error.hidden = false; });
+    video.src = card.video ? mediaUrl(card) : card.url;
+    body.append(video, error);
+  }
+  if (card.url) {
+    const link = element('a', 'video-source', youtube ? 'Åpne på YouTube' : 'Åpne videolenken');
+    link.href = card.url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    body.append(link);
+  }
+}
+
 function renderCards() {
   const active = new Set(state.cards.map(card => card.id));
   for (const [id, url] of objectUrls) if (!active.has(id)) {
@@ -274,16 +319,7 @@ function renderCards() {
       surface.append(image);
       body.append(surface);
     } else if (card.type === 'video') {
-      const video = element('video');
-      video.controls = true;
-      video.playsInline = true;
-      video.preload = 'none';
-      video.src = card.video ? mediaUrl(card) : card.url;
-      video.setAttribute('aria-label', 'Spill av video');
-      const error = element('p', 'video-error', 'Videoen kan ikke spilles av i denne nettleseren.');
-      error.hidden = true;
-      video.addEventListener('error', () => { error.hidden = false; });
-      body.append(video, error);
+      renderVideo(body, card);
     } else if (card.type === 'link') {
       const link = element('a', '', card.title || card.url);
       link.href = card.url;
@@ -915,7 +951,7 @@ function editCard(card) {
 
 function videoForm(at) {
   const form = element('form');
-  form.append(element('p', '', 'Bruk en direkte lenke til en videofil, for eksempel MP4 eller WebM.'));
+  form.append(element('p', '', 'Lim inn en YouTube-lenke eller en direkte lenke til en MP4- eller WebM-fil.'));
   const url = field(form, 'Videolenke', 'url');
   url.required = true;
   url.addEventListener('input', () => url.setCustomValidity(''));

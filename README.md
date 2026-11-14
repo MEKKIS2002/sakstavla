@@ -27,7 +27,7 @@ Bygget ligger i dist/. Relative ressursadresser og navigasjon med URL-fragmenter
 - Dra i ledig tavleplass for å panorere. Du kan også dra med midtre museknapp over et kort. Bruk «Tilpass alt innhold» nederst til høyre for å finne igjen alle kortene.
 - Dra oppgaver til en kolonne eller mellom kortene i en kolonne. På berøringsskjerm kan du endre status i oppgavedetaljene. Bruk «Lagre og fest på tavla» for å lage en kobling til oppgaven fra korktavla.
 
-Videokort spiller av lokale filer og direkte nettadresser til videofiler i formater nettleseren støtter. Videofiler følger med i sikkerhetskopien. For en direkte videolenke lagres nettadressen.
+Videokort støtter lokale filer, direkte videolenker og YouTube. Hvis YouTube-videoen har sperret innebygging, bruk «Åpne på YouTube». Videofiler følger med i sikkerhetskopien. For en direkte videolenke lagres nettadressen.
 
 ## Tavler, grupper og historikk
 

@@ -160,3 +160,5 @@ form textarea{resize:vertical}
 .inbox-capture{display:flex;align-items:center;gap:7px}
 #inboxButton.capture-on{border-color:#a52e32}
 .search-highlight{outline:4px solid #a52e32}
+.youtube-player{border:0;border-radius:4px;width:100%;min-height:0;flex:1;background:#242523}
+.video-source{font-size:.77rem}

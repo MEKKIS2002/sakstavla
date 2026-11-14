@@ -498,3 +498,19 @@ test('kommandopalett, innboks, kildespor, trådfokus og sammenbrettede grupper',
   await page.getByRole('button', { name: 'Åpne gruppen' }).click();
   await expect(card).toHaveCount(1);
 });
+
+test('YouTube-lenke bruker innebygd spiller med lenke til originalen', async ({ page }) => {
+  await page.route('https://www.youtube-nocookie.com/embed/**', route => route.fulfill({ body: 'YouTube' }));
+  await page.goto('/sakstavla/');
+  await saved(page);
+  await page.getByRole('button', { name: 'Åpne tavlemeny' }).click();
+  await page.getByRole('button', { name: 'Direkte videolenke' }).click();
+  await page.getByLabel('Videolenke', { exact: true }).fill('https://www.youtube.com/watch?v=M7lc1UVf-VE');
+  await page.getByRole('button', { name: 'Legg til video' }).click();
+  const frame = page.locator('iframe[title="YouTube-video"]');
+  await expect(frame).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/M7lc1UVf-VE');
+  await expect(page.getByRole('link', { name: 'Åpne på YouTube' })).toBeVisible();
+  await saved(page);
+  await page.reload();
+  await expect(frame).toBeVisible();
+});
